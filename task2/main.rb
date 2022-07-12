@@ -89,17 +89,17 @@ end
 
 
 if __FILE__ == $0
-  yml_args = YAML.load_file('arguments.yml')
-  category_link = yml_args['category_link']
-  file_name = yml_args['file_name']
-  links = GET_category_links.get_links(category_link)
+  #yml_args = YAML.load_file('arguments.yml')
+  #category_link = yml_args['category_link']
+  #file_name = yml_args['file_name']
+  links = GET_category_links.get_links('https://www.petsonic.com/farmacia-para-gatos/?categorias=cicatrizantes-para-gatos')
   threads = []
   start = Time.now
   links.each do |link|
     p = Product.new
     threads << Thread.new do
       p.run(link)
-      CSV_writter.writter(file_name, p.get_args)
+      CSV_writter.writter('test.csv', p.get_args)
     end
     threads.map(&:join)
   end

@@ -95,7 +95,7 @@ def csv_write(file_name = 'test.csv', pars_arr)
 end
 
 if __FILE__ == $0
-  puts "Введите ссылку на каталог с сайта ww.petsonic.com:"
+  puts "Введите ссылку на каталог с сайта www.petsonic.com:"
   category_link = gets.chomp
   puts "Введите введите имя csv-файла:"
   csv_name = gets.chomp+'.csv'
