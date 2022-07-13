@@ -149,16 +149,16 @@ def csv_write(pars_arr, file_name = 'test.csv')
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
+def main
   puts 'Введите ссылку на каталог с сайта www.petsonic.com:'
   category_link = gets.chomp
   puts 'Введите введите имя csv-файла:'
   csv_name = "#{gets.chomp}.csv"
   category_links = get_links(category_link)
-  start = Time.now
   category_links.each do |link|
     data = get_main_data(link)
     csv_write(data, csv_name)
   end
-  puts (Time.now - start).to_s
-end
+end 
+
+main

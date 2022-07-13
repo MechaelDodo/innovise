@@ -18,13 +18,11 @@ class Product
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
+def main
   yml_args = YAML.load_file('arguments.yml')
-  category_link = yml_args['category_link']
-  file_name = yml_args['file_name']
+  category_link, file_name  = yml_args['category_link'], yml_args['file_name']
   links = GET_category_links.get_links(category_link)
-  threads = []
-  pages = []
+  threads, pages = [], []
   start = Time.now
   links.each do |link|
     threads << Thread.new do
@@ -35,12 +33,12 @@ if __FILE__ == $PROGRAM_NAME
   threads = []
   pages.each do |page|
     threads << Thread.new do
-      puts "Parsing.get_data(page): #{Parsing.get_main_data(page)}"
-      p = Product.new(file_name = file_name, Parsing.get_main_data(page))
+      p = Product.new(file_name = file_name, Parsing.get_main_data(page)); p.run
       p.run
     end
     threads.map(&:join)
   end
   puts (Time.now - start).to_s
-
 end
+
+main
