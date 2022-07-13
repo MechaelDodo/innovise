@@ -1,13 +1,13 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 require 'nokogiri'
 require 'yaml'
-require 'thread'
 require_relative 'csv_writter'
 require_relative 'get_category_links'
 require_relative 'parsing'
 
 class Product
-
   def initialize(file_name, data)
     @file_name = file_name
     @data = data
@@ -15,13 +15,10 @@ class Product
 
   def run
     CSV_writter.writter(@file_name, @data)
-
   end
-
 end
 
-
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
   yml_args = YAML.load_file('arguments.yml')
   category_link = yml_args['category_link']
   file_name = yml_args['file_name']
@@ -38,28 +35,12 @@ if __FILE__ == $0
   threads = []
   pages.each do |page|
     threads << Thread.new do
-      puts "Parsing.get_data(page): #{Parsing.get_data(page)}"
-      p = Product.new(file_name=file_name, Parsing.get_data(page))
+      puts "Parsing.get_data(page): #{Parsing.get_main_data(page)}"
+      p = Product.new(file_name = file_name, Parsing.get_main_data(page))
       p.run
     end
     threads.map(&:join)
   end
-  puts "#{Time.now - start}"
-  #yml_args = YAML.load_file('arguments.yml')
-  #category_link = yml_args['category_link']
-  #file_name = yml_args['file_name']
-  #
-  # links = GET_category_links.get_links('https://www.petsonic.com/farmacia-para-gatos/?categorias=cicatrizantes-para-gatos')
-  # threads = []
-  # start = Time.now
-  # links.each do |link|
-  #   p = Product.new
-  #   threads << Thread.new do
-  #     p.run(link)
-  #     CSV_writter.writter('test.csv', p.get_args)
-  #   end
-  #   threads.map(&:join)
-  # end
-  # puts "#{Time.now - start}"
+  puts (Time.now - start).to_s
 
 end
