@@ -18,27 +18,23 @@ class Product
   end
 end
 
+
 def main
   yml_args = YAML.load_file('arguments.yml')
-  category_link, file_name  = yml_args['category_link'], yml_args['file_name']
+  category_link = yml_args['category_link']
+  file_name = yml_args['file_name']
   links = GET_category_links.get_links(category_link)
-  threads, pages = [], []
-  start = Time.now
+  threads = []
+  pages = []
   links.each do |link|
-    threads << Thread.new do
-      pages.append(Parsing.parsing(link))
-    end
+    threads << Thread.new { pages.append(Parsing.parsing(link)) }
     threads.map(&:join)
   end
   threads = []
   pages.each do |page|
-    threads << Thread.new do
-      p = Product.new(file_name = file_name, Parsing.get_main_data(page)); p.run
-      p.run
-    end
+    threads << Thread.new { Product.new(file_name = file_name, Parsing.get_main_data(page)).run }
     threads.map(&:join)
   end
-  puts (Time.now - start).to_s
 end
 
 main

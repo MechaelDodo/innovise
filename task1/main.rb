@@ -5,23 +5,32 @@ require 'nokogiri'
 require 'csv'
 
 # парсинг html-странички
-def parsing(link)
+def one_page_parsing(link)
   puts "START PARSING: #{link}"
-  puts link
   html = URI.open(link)
   Nokogiri::HTML(html)
 end
 
 # возвращает список с ссылками на страницы
-def get_links(category_link)
-  page = parsing(category_link)
-  $links = []
+def get_links_from_category(link_category)
+  # PAGINATION!!!
+  page = one_page_parsing(link_category)
+  links = []
   page.xpath('//li[contains(@class, "ajax_block_product")]/div[@class="product-container"]/*/
-div[contains(@class, "product-desc")]/a/@href').each { |href| $links.append(href) }
-  $links
+div[contains(@class, "product-desc")]/a/@href').each { |href| links.append(href) }
+  num_of_products = page.xpath('//input[@id = "nb_item_bottom"]/@value').text.to_i
+  num_of_pages = (num_of_products / 25.0).ceil
+  (2..num_of_pages).each do |page_num|
+    result_link_to_category = link_category + "?p=#{page_num}"
+    one_page_parsing(result_link_to_category).xpath('//li[contains(@class, "ajax_block_product")]/
+div[@class="product-container"]/*/div[contains(@class, "product-desc")]/a/@href').each { |href| links.append(href) }
+  end
+  links
 end
 
-# поиск имени товара
+
+
+# поиск имени товара !!!
 def get_product_name(page)
   $name
   page.xpath('//div[@class="nombre_fabricante_bloque col-md-12 desktop"]/*').each do |div|
@@ -40,7 +49,7 @@ def get_product_img(page)
 end
 
 # возвращает список с граммовкой и ценой
-def get_weight_price(page)
+def get_weight_and_price(page)
   product = []
   page.xpath('//div[@class="attribute_list"]/*').each do |div|
     prod_weight = div.search('span.radio_label').text.strip
@@ -53,15 +62,16 @@ def get_weight_price(page)
       product[:price] += prod_price
     end
   end
+  puts "PRODUCT #{product}"
   product
 end
 
-def delete_letters(product)
+def delete_letters_for_weight(product)
   puts "product[:weight]: #{product[:weight]}"
-  (product[:weight].delete 'a-zA-Z,.-').split
+  (product[:weight].delete 'a-zA-Zñ,.-').split
 end
 
-def delete_numbers(product)
+def delete_numbers_for_weight(product)
   weight_gr = product[:weight].split('')
   weight_gr.each_with_index do |ch, i|
     ch = ch.delete '0-9-'
@@ -75,8 +85,7 @@ def delete_numbers(product)
 end
 
 # wight: ["6", "2", "6", "4"], weight_gr: ["Pipetas", "ml", "Pipetas", "ml"], price: ["20.82", "26.02"]
-def convert_weight_more(weight, price,
-                        name, weight_gr)
+def convert_weight_more_price(weight, price, name, weight_gr)
   weight_new = Array.new(price.length)
   i = 0
   j = 0
@@ -89,8 +98,7 @@ def convert_weight_more(weight, price,
 end
 
 # weight: ["30120"], weight_gr: ["Cápsulas", "Cápsulas"], price: ["11.95", "37.95"]
-def convert_weight_less(weight, price,
-                        name, weight_gr)
+def convert_weight_less_price(weight, price, name, weight_gr)
   weight_arr = weight[0].split('')
   weight = Array.new(price.length, weight[0])
   weight[0] = weight_arr[0, 2].join
@@ -102,14 +110,14 @@ def convert_weight_less(weight, price,
 end
 
 # привожу к форме как в ТЗ
-def convert(weight, price, name, weight_gr)
+def convert_all_objects_for_technical_task(weight, price, name, weight_gr)
   puts "weight: #{weight}, weight_gr: #{weight_gr}, price: #{price}"
   if weight.empty?
     weight = Array.new(price.length, name) # если не указаны граммовки
   elsif weight.length > price.length
-    weight = convert_weight_more(weight, price, name, weight_gr)
+    weight = convert_weight_more_price(weight, price, name, weight_gr)
   elsif weight.length < price.length
-    weight = convert_weight_less(weight, price, name, weight_gr)
+    weight = convert_weight_less_price(weight, price, name, weight_gr)
   else
     weight.each_with_index { |w, i| weight[i] = "#{name} - #{w} #{weight_gr[i]}" }
   end
@@ -126,15 +134,15 @@ def get_result_array(price, weight, image)
 end
 
 def get_main_data(link)
-  page = parsing(link)
-  product = get_weight_price(page)
+  page = one_page_parsing(link)
+  product = get_weight_and_price(page)
   $name = get_product_name(page)
   $src = get_product_img(page)
   price = product[:price].split(' €')
-  weight = delete_letters(product)
-  weight_gr = delete_numbers(product)
+  weight = delete_letters_for_weight(product)
+  weight_gr = delete_numbers_for_weight(product)
   weight_gr = Array.new(price.length, 'Cápsulas') if weight_gr.empty?
-  weight = convert(weight, price, $name, weight_gr)
+  weight = convert_all_objects_for_technical_task(weight, price, $name, weight_gr)
   image = Array.new(price.length, $src)
   get_result_array(price, weight, image)
 end
@@ -154,11 +162,10 @@ def main
   category_link = gets.chomp
   puts 'Введите введите имя csv-файла:'
   csv_name = "#{gets.chomp}.csv"
-  category_links = get_links(category_link)
+  category_links = get_links_from_category(category_link)
   category_links.each do |link|
     data = get_main_data(link)
     csv_write(data, csv_name)
   end
-end 
-
+end
 main
