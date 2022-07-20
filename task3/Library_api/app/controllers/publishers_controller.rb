@@ -46,6 +46,6 @@ class PublishersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def publisher_params
-      params.require(:publisher).permit(:name)
+      params.require(:publisher).permit(:name)#, {books: [:name, :price]}) #!!!
     end
 end
