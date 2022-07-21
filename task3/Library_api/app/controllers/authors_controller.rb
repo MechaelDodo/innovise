@@ -1,5 +1,9 @@
 class AuthorsController < ApplicationController
   before_action :set_author, only: %i[ show update destroy ]
+  #skip_before_action :verify_authenticity_token
+
+
+
 
   # GET /authors
   def index
