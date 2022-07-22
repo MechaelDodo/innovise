@@ -1,3 +1,3 @@
 class ApplicationController < ActionController::API
-  include ErrorHandling
+  #include ErrorHandling
 end

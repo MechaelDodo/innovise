@@ -10,14 +10,65 @@
     <script src = "interface.js"></script>
 </head>
 <body>
-    <h2>Add author</h2>
+    <div>
+        <h3>Book:</h3>
+        <button id="ShowBooks" onclick="showBooks()">Show books</button>
+        <input id="inputBookID" type="number" placeholder="ID (UPDATE-SHOW)">
+        <button id="ShowBook" onclick="showBook()">Show book</button>
+        <br>
+        <input id="inputBookName" type="text" placeholder="name">
+        <br>
+        <input id="inputBookPrice" type="number" placeholder="price">
+        <br>
+        <input id="inputAuthorID_forBook" type="number" placeholder="ID publisher">
+        <br>
+        <input id="inputPublisherID_forBook" type="number" placeholder="ID category">
+        <br><br>
+        <button id="addBookButton" onclick="addBook()">ADD book</button>
+        <button id="updateBookButton" onclick="updateBook()">UPDATE book</button>
+        <button id="deleteBookButton" onclick="deleteBook()">Delete book</button>
+        <br><br>
+    </div>
+    <div>
+        <h3>Author:</h3>
+        <button id="ShowAuthors" onclick="showAuthors()">Show authors</button>
+        <input id="inputAuthorID" type="number" placeholder="ID (UPDATE-SHOW)">
+        <button id="ShowAuthor" onclick="showAuthor()">Show author</button>
+        <br>
+        <input id="inputAuthorName" type="text" placeholder="name">
+        <br><br>
+        <button id="addAuthorButton" onclick="addAuthor()">ADD author</button>
+        <button id="updateAuthorButton" onclick="updateAuthor()">UPDATE author</button>
+        <button id="deleteAuthorButton" onclick="deleteAuthor()">Delete author</button>
+        <br><br>
+    </div>
+    <div>
+        <h3>Publisher:</h3>
+        <button id="ShowPublishers" onclick="showPublishers()">Show publishers</button>
+        <input id="inputPublisherID" type="number" placeholder="ID (UPDATE-SHOW)">
+        <button id="ShowPublisher" onclick="showPublisher()">Show publisher</button>
+        <br>
+        <input id="inputPublisherName" type="text" placeholder="name">
+        <br><br>
+        <button id="addPublisherButton" onclick="addPublisher()">ADD publisher</button>
+        <button id="updatePublisherButton" onclick="updatePublisher()">UPDATE publisher</button>
+        <button id="deletePublisherButton" onclick="deletePublisher()">Delete publisher</button>
+        <br><br>
+    </div>
+    <div>
+        <h3>Category:</h3>
+        <button id="ShowCategories" onclick="showCategories()">Show categories</button>
+        <input id="inputCategoryID" type="number" placeholder="ID (UPDATE)">
+        <button id="ShowCategory" onclick="showCategory()">Show category</button>
+        <br>
+        <input id="inputCategoryName" type="text" placeholder="name">
+        <br><br>
+        <button id="addCategoryButton" onclick="addCategory()">ADD category</button>
+        <button id="updateCategoryButton" onclick="updateCategory()">UPDATE category</button>
+        <button id="deleteCategoryButton" onclick="deleteCategory()">Delete category</button>
+        <br><br>
+    </div>
 
-    <br>
-    <input id="inputAuthorName" type="text" placeholder="name">
-
-    <br><br>
-    <button id="addAuthorButton" onclick="addAuthor()">ADD author</button>
-    <br><br>
 
 
 
