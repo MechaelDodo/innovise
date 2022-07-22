@@ -62,6 +62,7 @@ function updateBook()
 {
     let book_id = document.getElementById('inputBookID').value;
     let book_name = document.getElementById('inputBookName').value;
+    let book_price = document.getElementById('inputBookPrice').value;
     let author_id = document.getElementById('inputAuthorID_forBook').value;
     let publisher_id = document.getElementById('inputPublisherID_forBook').value;
 
